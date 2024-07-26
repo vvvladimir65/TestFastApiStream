@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ML Model Prediction</title>
+</head>
+<body>
+    <h1>Predict House Price</h1>
+    <form id="predictionForm">
+        <label for="BedroomCount">Bedroom Count:</label>
+        <input type="number" id="BedroomCount" name="BedroomCount" required>
+        <br>
+        
+        <label for="LivingArea">Living Area:</label>
+        <input type="number" id="LivingArea" name="LivingArea" required>
+        <br>
+        
+        <label for="BathroomCount">Bathroom Count:</label>
+        <input type="number" id="BathroomCount" name="BathroomCount" required>
+        <br>
+        
+        <label for="StateOfBuilding_Encoded">State of Building Encoded:</label>
+        <input type="number" id="StateOfBuilding_Encoded" name="StateOfBuilding_Encoded" required>
+        <br>
+
+        <label for="SwimmingPool">Swimming Pool:</label>
+        <input type="number" id="SwimmingPool" name="SwimmingPool" required>
+        <br>
+
+        <label for="RoomCount">Room Count:</label>
+        <input type="number" id="RoomCount" name="RoomCount" required>
+        <br>
+
+        <button type="submit">Predict</button>
+    </form>
+
+    <h2>Prediction Result:</h2>
+    <div id="result"></div>
+
+    <h2>Data from GET Request:</h2>
+    <button id="fetchDataButton">Fetch Some Data</button>
+    <div id="fetchedDataResult"></div>
+
+    <script>
+        document.getElementById('predictionForm').onsubmit = async function(event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            const formData = new FormData(this);
+            const data = {};
+            formData.forEach((value, key) => {
+                data[key] = parseFloat(value);
+            });
+
+            try {
+                const response = await fetch('http://127.0.0.1:8000/predict', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data),
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok: ' + response.statusText);
+                }
+
+                const result = await response.json();
+                document.getElementById('result').innerText = `Predicted Value: ${result.prediction}`;
+            } catch (error) {
+                document.getElementById('result').innerText = `Error: ${error.message}`;
+            }
+        };
+
+        document.getElementById('fetchDataButton').onclick = async function() {
+            try {
+                const response = await fetch('http://127.0.0.1:8000/', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Network response was not ok: ' + response.statusText);
+                }
+
+                const data = await response.json(); // Get the data
+                document.getElementById('fetchedDataResult').innerText = JSON.stringify(data, null, 2); // Display fetched data as JSON
+            } catch (error) {
+                document.getElementById('fetchedDataResult').innerText = `Error: ${error.message}`;
+            }
+        };
+    </script>
+</body>
+</html>
