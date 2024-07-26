@@ -2,13 +2,13 @@
 FROM python:3.10
 
 # Create a folder "app" at the root of the image
-RUN mkdir /app
+RUN mkdir /FastApiReg
 
 # Define /app as the working directory
-WORKDIR /app
+WORKDIR /FastApiReg
 
 # Copy all the files in the current directory in /app
-COPY . /app
+COPY . /FastApiReg
 
 # Update pip
 RUN pip install --upgrade pip
@@ -18,4 +18,4 @@ RUN pip install -r requirements.txt
 
 # Run the app
 # Set host to 0.0.0.0 to make it run on the container's network
-CMD uvicorn app:app --host 0.0.0.0
+CMD uvicorn FastApiReg:app --host 0.0.0.0

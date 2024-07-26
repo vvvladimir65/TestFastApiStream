@@ -8,10 +8,10 @@ import pandas as pd
 model = joblib.load('model.pkl')
 
 # Initialize FastAPI app
-app = FastAPI()
+FastApiReg = FastAPI()
 
 # Add CORS middleware
-app.add_middleware(
+FastApiReg.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  # Replace "*" with specific allowed origins in production
     allow_credentials=True,
@@ -31,7 +31,7 @@ class InputData(BaseModel):
     RoomCount: float
 
 # API endpoint for predictions
-@app.post('/predict/')
+@FastApiReg.post('/predict/')
 def predict(input_data: InputData):
     # Print input for debugging purposes
     # print(input_data)
@@ -53,6 +53,6 @@ def predict(input_data: InputData):
     # Return predicted value
     return {"prediction": prediction[0]}
 
-@app.get("/")
+@FastApiReg.get("/")
 def read_root():
     return {"message": "Welcome to the ML Model API!"}
